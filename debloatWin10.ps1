@@ -5,7 +5,7 @@ Created: 5/15/2019
 Updated: 5/19/2019
 Tested: Windows 10, 1809 Professional
 
-Version: 1.1
+Version: 1.2
 
 This script removes unnecessary built-in Apps
 & makes some quality of life changes in the registry
