@@ -2,10 +2,10 @@
 Name: Windows 10 Debloated
 Author: Clark Crisp & George Babichev
 Created: 5/15/2019
-Updated: 5/19/2019
-Tested: Windows 10, 1809 Professional
+Updated: 6/27/2019
+Tested: Windows 10, 1809, 1903 Professional
 
-Version: 1.2
+Version: 1.3
 
 This script removes unnecessary built-in Apps
 & makes some quality of life changes in the registry
@@ -18,13 +18,14 @@ Output colors
 - Green: Success
 - Yellow: Info
 
+
 #>
 
 $ProgressPreference=’SilentlyContinue’ # Removes the default PowerShell progress window
 
 # Enable Logging
 $LogPath = "C:\Scripts\Logging"
-$LogName = $LogPath + "\Log.txt"
+$LogName = $LogPath + "\DebloatLog.txt"
 
 if (!(Test-Path $LogName)) { 
     #If the $logName does not exist, create it
@@ -33,6 +34,10 @@ if (!(Test-Path $LogName)) {
 }
 #Easy to read name of removeable Apps
 $RemoveableApps = @(
+    "7EE7776C.LinkedInforWindows" # From Dell 1803 Image
+    "DellInc.DellDigitalDelivery" # From Dell 1803 Image
+    "DellInc.DellSupportAssistforPCs" # From Dell 1803 Image
+    "Microsoft.RemoteDesktop" # From Dell 1803 Image
     "Microsoft.BingWeather"
     "Microsoft.GetHelp"
     "Microsoft.GetStarted"
@@ -65,21 +70,12 @@ $RemoveableApps = @(
     "Microsoft.ZuneVideo"
 )
 
-$RemoveableFolders = @(
-    "{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}" # Music
-    "{088e3905-0323-4b02-9826-5d99428e115f}" # Downloads
-    "{24ad3ad4-a569-4530-98e1-ab02f9417aa8}" # Pictures
-    "{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}" # Videos
-    "{d3162b92-9365-467a-956b-92703aca08af}" # Documents
-    "{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" # Desktop
-    "{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" # 3D Objects
-)
 
 Function WriteToLog {
-#Writes to log
+#Writes to logfile
     param($Message, $color)
 
-    $pre = ""
+    $pre = "" #Variable for appending Error/Success/Info to the start of each line
 
     if ($color -eq "red"){
         $pre = "ERROR: "
@@ -174,6 +170,7 @@ Function ModifyReg {
 
 Function Remove-TheBloat-CU {
 # Removes the bloat for the current user
+# Although this step isn't necessarily important, it is required if you sysprep
     WriteToLog -Message "Starting current user bloat removal"
     ForEach ($bloat in $RemoveableApps) { 
         Try {
@@ -181,7 +178,6 @@ Function Remove-TheBloat-CU {
 
                 If ($CurrentPackage) {
                     $ThePackageName = $CurrentPackage.PackageFullName 
-                    #Point of failure line, If fails go to line 62
                     Remove-AppxPackage -Package $ThePackageName -ErrorAction Stop
                     WriteToLog -Message "Successfully Removed $bloat" -color "green"
                 } Else {
@@ -215,33 +211,131 @@ Function Remove-TheBloat-AU {
 }
 
 Function Replace-StartMenu {
-# Downloads the latest cleaned startMenu layout file & applies
+# Creates a cleaned Start Menu layout file 
 
-    $url = "http://tools.xantrion.com/DefaultLayouts.xml"
-    $Destination = "C:\Users\Default\AppData\Local\Microsoft\Windows\Shell"
-    $DestinationFileName = $Destination + "\DefaultLayouts.xml"
+$Layouts = '<?xml version="1.0" encoding="utf-8"?>
+<FullDefaultLayoutTemplate 
+    xmlns="http://schemas.microsoft.com/Start/2014/FullDefaultLayout"
+    xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout"
+    Version="1">
+    <StartLayoutCollection>
+        <!-- 6 cell wide Desktop layout with Preinstalled apps and no skype -->
+        <!-- 6 cell wide Desktop layout with Preinstalled apps -->
+        
+      
+        <!-- 8 cell wide Desktop layout with Preinstalled apps and no skype -->
 
-    # Deletes current start menu layout file
-    try{
-        get-ChildItem -Path $Destination | Remove-Item -Force -ErrorAction Stop
-        WriteToLog -Message "Removed Original StartMenuLayout file" -color "green"
-    } Catch {
-        WriteToLog -Message "Error deleting original StartMenuLayout File" -color "red"
-		WriteToLog -Message "Skipping download & install of new file" -color "red"
-    }
-    
-    While (!(Test-Path $DestinationFileName)) {
+        <!-- 8 cell wide Desktop layout with Preinstalled apps -->
+        
+
+        <!-- 6 cell wide Cloud layout with Preinstalled apps and no skype -->
+        
+        <!-- 6 cell wide Cloud layout with Preinstalled apps -->
+        <StartLayout
+            GroupCellWidth="6"
+            PreInstalledAppsEnabled="false">
+        <start:Group Name="Windows">
+          <start:DesktopApplicationTile Size="2x2" Column="0" Row="0" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\System Tools\File Explorer.lnk" />
+          <start:DesktopApplicationTile Size="2x2" Column="4" Row="2" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Accessories\Remote Desktop Connection.lnk" />
+          <start:DesktopApplicationTile Size="2x2" Column="2" Row="2" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\System Tools\Control Panel.lnk" />
+          <start:Tile Size="2x2" Column="2" Row="0" AppUserModelID="windows.immersivecontrolpanel_cw5n1h2txyewy!microsoft.windows.immersivecontrolpanel" />
+          <start:Tile Size="2x2" Column="4" Row="0" AppUserModelID="Microsoft.MicrosoftEdge_8wekyb3d8bbwe!MicrosoftEdge" />
+          <start:DesktopApplicationTile Size="2x2" Column="0" Row="2" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\System Tools\Command Prompt.lnk" />
+        </start:Group>
+        </StartLayout>
+        <!-- N-SKU 6 cell wide Cloud layout -->
+
+        <!-- N-SKU 6 cell wide Desktop layout -->
+
+        <!-- N-SKU 8 cell wide Desktop layout -->
+
+        <!-- 6 cell wide Desktop layout with No Preinstalled apps and no skype -->
+
+        <!-- 6 cell wide Desktop layout with No Preinstalled apps -->
+        <StartLayout
+            GroupCellWidth="6"
+            PreInstalledAppsEnabled="false">
+        <start:Group Name="Windows">
+          <start:DesktopApplicationTile Size="2x2" Column="0" Row="0" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\System Tools\File Explorer.lnk" />
+          <start:DesktopApplicationTile Size="2x2" Column="4" Row="2" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Accessories\Remote Desktop Connection.lnk" />
+          <start:DesktopApplicationTile Size="2x2" Column="2" Row="2" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\System Tools\Control Panel.lnk" />
+          <start:Tile Size="2x2" Column="2" Row="0" AppUserModelID="windows.immersivecontrolpanel_cw5n1h2txyewy!microsoft.windows.immersivecontrolpanel" />
+          <start:Tile Size="2x2" Column="4" Row="0" AppUserModelID="Microsoft.MicrosoftEdge_8wekyb3d8bbwe!MicrosoftEdge" />
+          <start:DesktopApplicationTile Size="2x2" Column="0" Row="2" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\System Tools\Command Prompt.lnk" />
+        </start:Group>
+        </StartLayout>
+
+        <!-- 8 cell wide Desktop layout with No Preinstalled apps and no skype -->
+
+        <!-- 8 cell wide Desktop layout with No Preinstalled apps -->
+
+        <!-- Long Term Servicing Branch 6 cell -->
+        <StartLayout
+            GroupCellWidth="6"
+            SKU="LongTermServicingBranch">
+        <start:Group Name="Windows">
+          <start:DesktopApplicationTile Size="2x2" Column="0" Row="0" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\System Tools\File Explorer.lnk" />
+          <start:DesktopApplicationTile Size="2x2" Column="4" Row="2" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Accessories\Remote Desktop Connection.lnk" />
+          <start:DesktopApplicationTile Size="2x2" Column="2" Row="2" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\System Tools\Control Panel.lnk" />
+          <start:Tile Size="2x2" Column="2" Row="0" AppUserModelID="windows.immersivecontrolpanel_cw5n1h2txyewy!microsoft.windows.immersivecontrolpanel" />
+          <start:Tile Size="2x2" Column="4" Row="0" AppUserModelID="Microsoft.MicrosoftEdge_8wekyb3d8bbwe!MicrosoftEdge" />
+          <start:DesktopApplicationTile Size="2x2" Column="0" Row="2" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\System Tools\Command Prompt.lnk" />
+        </start:Group>
+        </StartLayout>
+
+        <!-- Long Term Servicing Branch 8 cell -->
+
+        <!-- PPI 8 cell wide -->
+
+        <!-- Server 6 cell wide -->
+        
+        <!-- Server 8 cell wide -->
+       
+
+    </StartLayoutCollection>
+</FullDefaultLayoutTemplate>'
+
+    $Destination = "C:\Users\Default\AppData\Local\Microsoft\Windows\Shell\DefaultLayouts.xml"
+    $LayoutMod = "C:\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml"
+    if (Test-Path $LayoutMod){
+    # Some OEM's include a modification to the defualt layout to add OEM bloat. Nuke that too.
         try {
-            WriteToLog -Message "downloading new StartMenuLayout File"
-            Start-BitsTransfer -Source $Url -Destination $Destination
+            Remove-Item -Path $LayoutMod -Force -ErrorAction Stop
+            WriteToLog -Message "Removed LayoutModification" -color "green"
+        } Catch {
+            WriteToLog -Message "Could not remove LayoutModification" -color "red"
+        }
+    }
+    if (!(Test-Path $Destination)) {
+    # First we check if the file exists, and if it does we delete it.
+    # If for some reason the DefaultLayouts file doesn't exist, write a message to the log and
+    # Attempt to create it
+        WriteToLog -Message "DefaultLayouts file does not exist.. Attempting to create" -color "yellow"
+    }
+    else {
+    # File exists, let's try to delete it
+        try{
+            Remove-Item -Path $Destination -Force -ErrorAction Stop
+            WriteToLog -Message "Removed Original StartMenuLayout file" -color "green"
+        } Catch {
+            WriteToLog -Message "Error deleting original StartMenuLayout File" -color "red"
+        }
+    }
+
+    if (!(Test-Path $Destination)) {
+    # Creates new file from XML above
+        try {
+            New-Item -Path $Destination -ItemType File -ErrorAction Stop | Out-Null
+            Set-Content -Path $Destination $Layouts -ErrorAction Stop | Out-Null
             WriteToLog -Message "New StartMenuLayout file installed" -color "green"
         }Catch {
-            WriteToLog -Message "Error downloading & installing new StartMenuLayouts file" -color "red"
-        }    
+            WriteToLog -Message "Error installing new StartMenuLayouts file" -color "red"
+        }  
     }
 }
 
 Function Customize-Windows {
+# Sets settings for all new users. See below comments for detail.
 
     WriteToLog -Message "Loading ntuser registry hive"
     # Loads default new user HKCU hive
@@ -257,8 +351,6 @@ Function Customize-Windows {
     ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" -key "PeopleBand" -keyVal "0" -type "dword" -action "add"
     # Disables OneDrive from installing on Launch
     ModifyReg -Path "HKLM:\MAZY\Software\Microsoft\Windows\CurrentVersion\Run" -key "OneDriveSetup" -action "deleteA"
-    
-
 
     WriteToLog -Message "Unmounting registry hive"
     # Garbage Collection to cleanup any open handles on registry hive
@@ -269,11 +361,24 @@ Function Customize-Windows {
 
 Function RemoveExplorerFolders {
 
+<#
+    This function removes "3D Objects, Desktop, Documents, Downloads, Pictures, Videos" 
+    From the "This PC" view in Explorer, and from the "This PC" side bar in Explorer
+#>
+
     WriteToLog -Message "Starting Explorer cleanup"
 
 	$RegistryPath64 = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\"
 	$RegistryPath32 = "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\"
-
+    $RemoveableFolders = @(
+        "{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}" # Music
+        "{088e3905-0323-4b02-9826-5d99428e115f}" # Downloads
+        "{24ad3ad4-a569-4530-98e1-ab02f9417aa8}" # Pictures
+        "{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}" # Videos
+        "{d3162b92-9365-467a-956b-92703aca08af}" # Documents
+        "{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}" # Desktop
+        "{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}" # 3D Objects
+    )
     <#
         Why have both registry paths? 
         Because, what if you're running a 32 bit OS? But more importantly
@@ -303,6 +408,11 @@ Function RemoveExplorerFolders {
 }
 
 Function ApplyMiscRegEdits{
+
+<#
+    Removes "Open with 3D Print" on extensions listed below.
+    Disables CloudContent 
+#>
 
     WriteToLog -Message "Starting Context Menu Cleanup"
 
@@ -352,5 +462,5 @@ Customize-Windows
 RemoveExplorerFolders
 ApplyMiscRegEdits
 
-WriteToLog -Message "Bloatware removale completed! -- Press Enter to quit."
-Read-Host
+WriteToLog -Message "Bloatware removale completed!"
+#Read-Host
