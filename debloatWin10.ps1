@@ -462,5 +462,5 @@ Customize-Windows
 RemoveExplorerFolders
 ApplyMiscRegEdits
 
-WriteToLog -Message "Bloatware removale completed!"
+WriteToLog -Message "Bloatware removal completed!"
 #Read-Host
