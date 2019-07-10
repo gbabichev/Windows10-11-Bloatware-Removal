@@ -21,7 +21,7 @@ Output colors
 
 #>
 
-$ProgressPreference=’SilentlyContinue’ # Removes the default PowerShell progress window
+$ProgressPreference='SilentlyContinue' # Removes the default PowerShell progress window
 
 # Enable Logging
 $LogPath = "C:\Scripts\Logging"
