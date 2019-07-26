@@ -2,10 +2,10 @@
 Name: Windows 10 Debloated
 Author: Clark Crisp & George Babichev
 Created: 5/15/2019
-Updated: 6/27/2019
+Updated: 7/26/2019
 Tested: Windows 10, 1809, 1903 Professional
 
-Version: 1.3
+Version: 1.3.1
 
 This script removes unnecessary built-in Apps
 & makes some quality of life changes in the registry
@@ -34,6 +34,15 @@ if (!(Test-Path $LogName)) {
 }
 #Easy to read name of removeable Apps
 $RemoveableApps = @(
+	"4DF9E0F8.Netflix" # From Dell 1903 Image
+	"C27EB4BA.DropboxOEM" # From Dell 1903 Image
+	"DellInc.DellCustomerConnect" # From Dell 1903 Image
+	"DellInc.DellDigitalDelivery" # From Dell 1903 Image
+	"DellInc.DellPowerManager" # From Dell 1903 Image
+	"DellInc.DellSupportAssistforPCs" # From Dell 1903 Image
+	"DellInc.MyDell" # From Dell 1903 Image
+	"ScreenovateTechnologies.DellMobileConnect" # From Dell 1903 Image
+	"STMicroelectronicsMEMS.DellFreeFallDataProtection" # From Dell 1903 Image
     "7EE7776C.LinkedInforWindows" # From Dell 1803 Image
     "DellInc.DellDigitalDelivery" # From Dell 1803 Image
     "DellInc.DellSupportAssistforPCs" # From Dell 1803 Image
@@ -462,5 +471,5 @@ Customize-Windows
 RemoveExplorerFolders
 ApplyMiscRegEdits
 
-WriteToLog -Message "Bloatware removal completed!"
+WriteToLog -Message "Bloatware removale completed!"
 #Read-Host
