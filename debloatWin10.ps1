@@ -1,11 +1,11 @@
 <#
 Name: Windows 10 Debloated
-Author: Clark Crisp & George Babichev
+Author: George Babichev
 Created: 5/15/2019
-Updated: 7/26/2019
+Updated: 11/11/2019
 Tested: Windows 10, 1809, 1903 Professional
-
-Version: 1.3.1
+Tested: Windows Server 2016, Windows Server 2019
+Version: 1.4
 
 This script removes unnecessary built-in Apps
 & makes some quality of life changes in the registry
@@ -20,6 +20,10 @@ Output colors
 
 
 #>
+
+param (
+    [string]$runType = "client"
+)
 
 $ProgressPreference='SilentlyContinue' # Removes the default PowerShell progress window
 
@@ -360,7 +364,10 @@ Function Customize-Windows {
     ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" -key "PeopleBand" -keyVal "0" -type "dword" -action "add"
     # Disables OneDrive from installing on Launch
     ModifyReg -Path "HKLM:\MAZY\Software\Microsoft\Windows\CurrentVersion\Run" -key "OneDriveSetup" -action "deleteA"
-
+	# Unchecks the "Show recents in Quick Access" 
+	ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion\Explorer" -key "ShowFrequent" -keyVal "0" -type "dword" -action "add"
+	ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion\Explorer" -key "ShowRecent" -keyVal "0" -type "dword" -action "add"
+	
     WriteToLog -Message "Unmounting registry hive"
     # Garbage Collection to cleanup any open handles on registry hive
     [gc]::Collect()
@@ -462,14 +469,21 @@ If (!([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]
 	Exit
 }
 
+if ($runType -eq "client"){
+    Remove-TheBloat-CU
+    Remove-TheBloat-AU
+    Replace-StartMenu
+    Customize-Windows
+    RemoveExplorerFolders
+    ApplyMiscRegEdits
+}
+if ($runType -eq "server"){
+    Customize-Windows
+    RemoveExplorerFolders
+    ApplyMiscRegEdits
+}
 
 
-Remove-TheBloat-CU
-Remove-TheBloat-AU
-Replace-StartMenu
-Customize-Windows
-RemoveExplorerFolders
-ApplyMiscRegEdits
 
 WriteToLog -Message "Bloatware removale completed!"
 #Read-Host
