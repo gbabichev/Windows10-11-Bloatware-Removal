@@ -14,6 +14,6 @@ This script does the following:
 7) Removes the "Open with 3D Print" on a right click of a JPG,PNG, other pictures formats. 
 
 Tested on - 
-Windows 10 Pro - 1803, 1809, 1893. 
+Windows 10 Pro - 1803, 1809, 1903, 1909
 
 
