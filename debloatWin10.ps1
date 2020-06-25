@@ -2,7 +2,7 @@
 Name: Windows 10 Debloated
 Author: George Babichev
 Created: 5/15/2019
-Updated: 11/11/2019
+Updated: 6/25/2020
 Tested: Windows 10, 1809, 1903, 1909, 2004 Professional
 Tested: Windows Server 2016, Windows Server 2019
 Version: 1.5
