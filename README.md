@@ -15,6 +15,7 @@ This script does the following:
 
 Tested on - 
 Windows 10 Pro - 1803, 1809, 1903, 1909, 2004
+
 Windows Server 2016, Windows Server 2019
 
 
