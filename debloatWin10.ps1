@@ -3,9 +3,9 @@ Name: Windows 10 Debloated
 Author: George Babichev
 Created: 5/15/2019
 Updated: 11/11/2019
-Tested: Windows 10, 1809, 1903 Professional
+Tested: Windows 10, 1809, 1903, 1909, 2004 Professional
 Tested: Windows Server 2016, Windows Server 2019
-Version: 1.4
+Version: 1.5
 
 This script removes unnecessary built-in Apps
 & makes some quality of life changes in the registry
@@ -127,16 +127,28 @@ Function ModifyReg {
 
     if ($action -eq "add"){
     # Adds a value to a Key
+	# This function assumes that the given path is valid.
         try {
             if (Get-ItemProperty -Path $path -Name $key -ErrorAction SilentlyContinue)
             {
                 # A value already exists, let's modify it
-                Set-ItemProperty -Path $path -Name $key -Value $keyVal
+				try {
+					Set-ItemProperty -Path $path -Name $key -Value $keyVal
+					WriteToLog -Message "Set Property $key" -color "green"
+				}Catch {
+					WriteToLog -Message "Unable to set Property $key" -color "red"
+				}
             }
             else {
-                New-ItemProperty $Path -Name $key -Value $keyVal -PropertyType $type -ErrorAction Stop | Out-Null
+				try {
+					New-ItemProperty $Path -Name $key -Value $keyVal -PropertyType $type -ErrorAction Stop | Out-Null
+					WriteToLog -Message "Created $path and set $key" -color "green"
+				}Catch {
+					WriteToLog -Message "Unable to create $path and set $key" -color "red"
+				}
             }
         }Catch {
+			# Error - The key in the path you're trying to modify does not exist.
             WriteToLog -Message "Error 0x000221" -color "red"
         }
     }
@@ -151,6 +163,7 @@ Function ModifyReg {
                 New-Item $Path -Name $key -ErrorAction Stop | Out-Null
                 WriteToLog -Message "$fullPath created" -color "green"
             } Catch {
+				# Unable to create the path or key for an unknown reason.
                 WriteToLog -Message "Error 0x000222" -color "red"
             }        
         
@@ -356,7 +369,9 @@ Function Customize-Windows {
         
     # Sets Explorer to launch to "This PC" by default instead of  "Quick Access"
     ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -key "LaunchTo" -keyVal "1" -type "dword"-action "add" 
-    # Hides search box
+	# Hides search box part 1
+    ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion\" -key "search" -action "create"
+    # Hides search box part 2
     ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion\search\" -key "SearchboxTaskbarMode" -keyVal "0" -type "dword" -action "add"
     # Hides people button part 1
     ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\" -key "People" -action "create"
