@@ -1,5 +1,5 @@
 |   App Name    | Removal Reasoning    |
-| ------------- |--------------:|
+| ------------- |--------------|
 | Bing Weather     | Not required for day-to-day use |
 | Get Help     | Not required for day-to-day use |
 | Get Started | Not required for day-to-day use |    
