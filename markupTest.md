@@ -1,27 +1,27 @@
 |   App Name    | Removal Reasoning    |
 | ------------- |--------------:|
-| Big Weather     | right-aligned |
-| Get Help     | centered      |
-| Get Started | are neat      |    
-| Messaging | are neat      | 
-| 3D Viewer | are neat      | 
-| Office Hub | are neat      | 
-| Solitaire Collection | are neat      | 
-| Sticky Notes | are neat      | 
-| Mixed Reality Portal | are neat      | 
-| 3D Paint | are neat      | 
-| One Note | are neat      | 
-| OneConnect | are neat      | 
-| People | are neat      | 
-| Print 3D | are neat      | 
-| Skype | are neat      | 
-| Wallet | are neat      | 
-| Windows Alarms | are neat      | 
-| WindowsCommunicationApps | are neat      | 
-| Windows Maps | are neat      | 
-| Xbox | are neat      | 
-| XboxGameOverlay | are neat      | 
-| XboxIdentityProvider | are neat      | 
-| XboxSpeechtoTextOverlay | are neat      | 
-| Zune Music | are neat      | 
-| Zune Video | are neat      | 
+| Bing Weather     | Not required for day-to-day use |
+| Get Help     | Not required for day-to-day use |
+| Get Started | Not required for day-to-day use |    
+| Messaging | Old App, not included in latest releases of Windows 10 | 
+| 3D Viewer | Not required for day-to-day use | 
+| Office Hub | If you need Office, you will install real Office | 
+| Solitaire Collection | Not required for day-to-day use | 
+| Sticky Notes | Not required for day-to-day use | 
+| Mixed Reality Portal | VR Desktop, Not required for day-to-day use | 
+| 3D Paint | Not required for day-to-day use | 
+| One Note | If you need OneNote, install it | 
+| OneConnect | Old App, not included in latest releases of Windows 10 | 
+| People | Not required for day-to-day use | 
+| Print 3D | Not required for day-to-day use | 
+| Skype | Not required for day-to-day use | 
+| Wallet | Not required for day-to-day use | 
+| Windows Alarms | Not required for day-to-day use | 
+| WindowsCommunicationApps | Not required for day-to-day use | 
+| Windows Maps | Not required for day-to-day use | 
+| Xbox | Not required for day-to-day use | 
+| XboxGameOverlay | Not required for day-to-day use  | 
+| XboxIdentityProvider | Not required for day-to-day use | 
+| XboxSpeechtoTextOverlay | Not required for day-to-day use | 
+| Zune Music | Not required for day-to-day use | 
+| Zune Video | Not required for day-to-day use | 
