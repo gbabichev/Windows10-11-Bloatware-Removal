@@ -1,6 +1,6 @@
-|   App Name    | Removal Reasoning    |
-| ------------- |--------------|
-| Bing Weather     | Not required for day-to-day use |
+|   App Name    | Removal Reasoning    | Where to Download | 
+| ------------- |--------------|--------------|
+| Bing Weather     | Not required for day-to-day use | https://www.microsoft.com/en-us/p/msn-weather/9wzdncrfj3q2 |
 | Get Help     | Not required for day-to-day use |
 | Get Started | Not required for day-to-day use |    
 | Messaging | Old App, not included in latest releases of Windows 10 | 
