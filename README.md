@@ -17,10 +17,3 @@ Tested on -
 Windows 10 Pro - 1803, 1809, 1903, 1909, 2004
 
 Windows Server 2016, Windows Server 2019
-
-
-| Tables        | Are           | Cool  |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
