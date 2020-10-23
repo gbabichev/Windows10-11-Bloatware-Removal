@@ -3,6 +3,7 @@ The purpose of this script is to remove apps I consider 'bloat', and to clean up
 The majority of the apps that are removed, can be re-installed via the Microsoft Store. Check out the table below. 
 
 **Tested On**
+
 Windows 10 Pro/Enterprise: 1803, 1809, 1903, 1909, 2004, 2009 (20H2)
 Windows Server: 2016, 2019
 
