@@ -1,3 +1,8 @@
+Most removed apps can be re-installed via the Microsoft Store. Links to apps below. 
+
+For general information regarding Windows 10 Default Apps, see the <a href='https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10'>Microsoft Documentation.</a> 
+
+
 |   App Name    | Removal Reasoning    | Where to Download | 
 | ------------- |--------------|--------------|
 | Bing Weather     | Not required for day-to-day use | https://www.microsoft.com/store/productId/9WZDNCRFJ3Q2|
