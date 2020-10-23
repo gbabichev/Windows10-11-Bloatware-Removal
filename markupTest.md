@@ -1,11 +1,29 @@
-Most removed apps can be re-installed via the Microsoft Store. Links to apps below. 
+The purpose of this script is to remove apps I consider 'bloat', and to clean up the default Windows 10 Start Menu. 
 
-For general information regarding Windows 10 Default Apps, see the <a href='https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10'>Microsoft Documentation.</a> 
+The majority of the apps that are removed, can be re-installed via the Microsoft Store. Check out the table below. 
+
+**Tested On**
+Windows 10 Pro/Enterprise: 1803, 1809, 1903, 1909, 2004, 2009 (20H2)
+Windows Server: 2016, 2019
+
 
 **How To Use**
 > This script is designed to be run directly after installation of the OS, or during an MDT Task Sequence. 
 
 > After running the script, changes will be visible on the next User Account that is logged on. 
+
+This script does the following:
+1) Removes bloatware FOR NEW USERS in a way that allows you to Sysprep the machine if required.
+2) Replaces the default start menu layout with something cleaner, and can be customized by you.
+3) Sets Explorer to open to "This PC" instead of "Quick Access" 
+4) Hides Cortana search box from start menu.
+5) Disables OneDrive from installing at launch. 
+6) Removes 3D Objects, Desktop, Downloads, Documents, Pictures, Music, Videos from the Explorer start page. 
+7) Removes the "Open with 3D Print" on a right click of a JPG,PNG, other pictures formats. 
+
+
+For general information regarding Windows 10 Default Apps, see the <a href='https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10'>Microsoft Documentation.</a> 
+
 
 |   App Name    | Removal Reasoning    | Where to Download | 
 | ------------- |--------------|--------------|
