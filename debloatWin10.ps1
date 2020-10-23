@@ -1,17 +1,20 @@
 <#
+
+##
+#  https://github.com/gbabichev/Windows10-Bloatware-Removal
+##
+
 Name: Windows 10 Debloated
 Author: George Babichev
 Created: 5/15/2019
-Updated: 6/25/2020
-Tested: Windows 10, 1809, 1903, 1909, 2004 Professional
-Tested: Windows Server 2016, Windows Server 2019
-Version: 1.5
+Updated: 10/23/2020
+Windows 10 Pro/Enterprise: 1803, 1809, 1903, 1909, 2004, 2009 (20H2)
+Windows Server: 2016, 2019
 
-This script removes unnecessary built-in Apps
-& makes some quality of life changes in the registry
+Version: See Variable below $scriptVersion
 
-HOW TO USE: After setting up Windows 10, run this script 
-BEFORE a domain join
+HOW TO USE: This script works best for new user profiles. 
+After setting up Windows 10, run this script, and create a new user account / domain join & sign in. 
 
 Output colors
 - Red: Error
@@ -26,6 +29,8 @@ param (
 )
 
 $ProgressPreference='SilentlyContinue' # Removes the default PowerShell progress window
+$scriptVersion = [decimal]"1.6"
+
 
 # Enable Logging
 $LogPath = "C:\Scripts\Logging"
@@ -65,20 +70,16 @@ $RemoveableApps = @(
     "Microsoft.OneConnect"
     "Microsoft.People"
     "Microsoft.Print3D"
-    "Microsoft.ScreenSketch"
     "Microsoft.SkypeApp"
     "Microsoft.Wallet"
     "Microsoft.WindowsAlarms"
     "Microsoft.Windowscommunicationsapps"
-    "Microsoft.WindowsFeedbackHub"
     "Microsoft.WindowsMaps"
     "Microsoft.WindowsSoundRecorder"
     "Microsoft.XboxApp"
     "Microsoft.XboxGameOverlay"
-    "Microsoft.XboxGamingOverlay"
     "Microsoft.XboxIdentityProvider"
     "Microsoft.XboxSpeechToTextOverlay"
-    "Microsoft.YourPhone"
     "Microsoft.ZuneMusic"
     "Microsoft.ZuneVideo"
 )
@@ -382,6 +383,11 @@ Function Customize-Windows {
 	# Unchecks the "Show recents in Quick Access" 
 	ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion\Explorer" -key "ShowFrequent" -keyVal "0" -type "dword" -action "add"
 	ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion\Explorer" -key "ShowRecent" -keyVal "0" -type "dword" -action "add"
+	# Disables Xbox Game Bar being active by default in the Settings->Gaming->Xbox Game Bar section. 
+	ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion" -key "GameDVR" -action "create"
+	ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion\GameDVR" -key "AppCaptureEnabled" -keyVal "0" -type "dword" -action "add"
+	ModifyReg -Path "HKLM:\MAZY\System\" -key "GameConfigStore" -action "create"
+	ModifyReg -Path "HKLM:\MAZY\System\GameConfigStore" -key "GameDVR_Enabled" -keyVal "0" -type "dword" -action "add"
 	
     WriteToLog -Message "Unmounting registry hive"
     # Garbage Collection to cleanup any open handles on registry hive
@@ -476,6 +482,26 @@ Function ApplyMiscRegEdits{
     WriteToLog -Message "Completed Context Menu Cleanup"
 }
 
+Function UpdateScript{
+    WriteToLog "Updating Script" -color "yellow"
+    if (Test-Path "C:\Scripts\debloatWin10Updated.ps1"){
+        Remove-Item "C:\Scripts\debloatWin10Updated.ps1"
+    }
+    
+    
+    $WebClient = New-Object -TypeName System.Net.WebClient
+    $uri = "https://raw.githubusercontent.com/gbabichev/Windows10-Bloatware-Removal/master/debloatWin10.ps1"
+    $targetPath = "C:\Scripts\debloatWin10Updated.ps1"
+    $WebClient.DownloadFile($uri, $targetPath)
+    Read-Host
+
+
+
+    Invoke-Expression -Command "C:\Scripts\debloatWin10Updated.ps1"
+    
+    Exit
+}
+
 # Check for admin rights, quit if not admin
 If (!([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {
@@ -483,6 +509,25 @@ If (!([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]
 	Read-Host
 	Exit
 }
+
+WriteToLog -Message "Starting Win10 Debloat Version $scriptVersion" -color "yellow"
+
+# Check for Win10 Debloat Script Updates via Github
+try {
+    $Response = Invoke-WebRequest -URI "https://raw.githubusercontent.com/gbabichev/Windows10-Bloatware-Removal/master/version" -UseBasicParsing
+    $latestVer = [decimal]$Response.Content
+    if ($latestVer -ne $scriptVersion){
+        $ask = Read-Host "You are using an older version of the Debloat Script. Update? (Y/N) "
+	    if ($ask -eq "y"){
+		    UpdateScript
+	    }
+    }
+}Catch {
+    WriteToLog -Message "Unable to check for script updates!" -color "red"  
+    WriteToLog -Message "Press Enter to continue" -color "yellow"
+    Read-Host
+ }
+
 
 if ($runType -eq "client"){
     Remove-TheBloat-CU
