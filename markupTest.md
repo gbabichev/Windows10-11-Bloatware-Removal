@@ -2,10 +2,10 @@ Most removed apps can be re-installed via the Microsoft Store. Links to apps bel
 
 For general information regarding Windows 10 Default Apps, see the <a href='https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10'>Microsoft Documentation.</a> 
 
+**How To Use**
+> This script is designed to be run directly after installation of the OS, or during an MDT Task Sequence. 
 
-> Test
-
-> Test2
+> After running the script, changes will be visible on the next User Account that is logged on. 
 
 |   App Name    | Removal Reasoning    | Where to Download | 
 | ------------- |--------------|--------------|
