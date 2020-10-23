@@ -16,7 +16,7 @@ For general information regarding Windows 10 Default Apps, see the <a href='http
 | Mixed Reality Portal | VR Desktop, Not required for day-to-day use | https://www.microsoft.com/store/productId/9NG1H8B3ZC7M |
 | 3D Paint | Not required for day-to-day use | https://www.microsoft.com/store/productId/9NBLGGH5FV99 |
 | One Note | If you need OneNote, install it | https://www.microsoft.com/store/productId/9WZDNCRFHVJL |
-| OneConnect | Old App, not included in latest releases of Windows 10 |  |
+| OneConnect | Old App, not included in latest releases of Windows 10 |  
 | People | Not required for day-to-day use | https://www.microsoft.com/store/productId/9NBLGGH10PG8 |
 | Print 3D | Not required for day-to-day use | https://www.microsoft.com/store/productId/9PBPCH085S3S |
 | Skype | Not required for day-to-day use | https://www.microsoft.com/store/productId/9WZDNCRFJ364 |
