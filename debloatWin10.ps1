@@ -493,10 +493,7 @@ Function UpdateScript{
     $uri = "https://raw.githubusercontent.com/gbabichev/Windows10-Bloatware-Removal/master/debloatWin10.ps1"
     $targetPath = "C:\Scripts\debloatWin10Updated.ps1"
     $WebClient.DownloadFile($uri, $targetPath)
-    Read-Host
-
-
-
+    
     Invoke-Expression -Command "C:\Scripts\debloatWin10Updated.ps1"
     
     Exit
