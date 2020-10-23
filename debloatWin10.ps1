@@ -22,7 +22,7 @@ Output colors
 - Yellow: Info
 
 
-#>
+#> 
 
 param (
     [string]$runType = "client"
