@@ -1,14 +1,14 @@
-# Windows10-Bloatware-Removal
+# Windows 10 & 11 Bloatware Removal
 
-The purpose of this script is to remove apps I consider 'bloat', and to clean up the default Windows 10 Start Menu. 
+The purpose of this script is to remove apps I consider 'bloat', and to clean up the default Windows 10 & 11 Start Menu. 
 
 The majority of the apps that are removed can be re-installed via the Microsoft Store. Check out the table below. 
 
 **Tested On**
 
-Windows 10 Pro/Enterprise: 1803, 1809, 1903, 1909, 2004, 2009 (20H2)
-
-Windows Server: 2016, 2019
+Windows 10 Pro/Enterprise: 1803, 1809, 1903, 1909, 2004, 21H1, 21H2 
+Windows 11 Pro/Enterprise: 21H2 
+Windows Server: 2016, 2019, 2022
 
 
 **How To Use**
