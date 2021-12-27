@@ -7,7 +7,9 @@ The majority of the apps that are removed can be re-installed via the Microsoft 
 **Tested On**
 
 Windows 10 Pro/Enterprise: 1803, 1809, 1903, 1909, 2004, 21H1, 21H2 
+
 Windows 11 Pro/Enterprise: 21H2 
+
 Windows Server: 2016, 2019, 2022
 
 
