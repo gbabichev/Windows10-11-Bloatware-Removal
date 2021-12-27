@@ -7,9 +7,10 @@
 Name: Windows 10 Debloated
 Author: George Babichev
 Created: 5/15/2019
-Updated: 10/23/2020
-Windows 10 Pro/Enterprise: 1803, 1809, 1903, 1909, 2004, 2009 (20H2)
-Windows Server: 2016, 2019
+Updated: 12/9/2021
+Windows 10 Pro/Enterprise: 1803, 1809, 1903, 1909, 2004, 2009, 21H1, 21H2
+Windows 11: 21H2 
+Windows Server: 2016, 2019, 2022
 
 Version: See Variable below $scriptVersion
 
@@ -29,7 +30,7 @@ param (
 )
 
 $ProgressPreference='SilentlyContinue' # Removes the default PowerShell progress window
-$scriptVersion = [decimal]"1.6"
+$scriptVersion = [decimal]"1.7"
 
 
 # Enable Logging
@@ -56,6 +57,8 @@ $RemoveableApps = @(
     "DellInc.DellDigitalDelivery" # From Dell 1803 Image
     "DellInc.DellSupportAssistforPCs" # From Dell 1803 Image
     "Microsoft.RemoteDesktop" # From Dell 1803 Image
+    "MicrosoftTeams"
+    "Microsoft.BingNews"
     "Microsoft.BingWeather"
     "Microsoft.GetHelp"
     "Microsoft.GetStarted"
@@ -65,23 +68,21 @@ $RemoveableApps = @(
     "Microsoft.MicrosoftSolitaireCollection"
     "Microsoft.MicrosoftStickyNotes"
     "Microsoft.MixedReality.Portal"
-    "Microsoft.MSPaint"
+    "Microsoft.MSPaint" # Windows 10 "Paint 3D" app
     "Microsoft.Office.OneNote"
     "Microsoft.OneConnect"
     "Microsoft.People"
+    "Microsoft.PowerAutomateDesktop"
     "Microsoft.Print3D"
     "Microsoft.SkypeApp"
+    "Microsoft.Todos"
     "Microsoft.Wallet"
     "Microsoft.WindowsAlarms"
     "Microsoft.Windowscommunicationsapps"
     "Microsoft.WindowsMaps"
     "Microsoft.WindowsSoundRecorder"
-    "Microsoft.XboxApp"
-    "Microsoft.XboxGameOverlay"
-    "Microsoft.XboxIdentityProvider"
-    "Microsoft.XboxSpeechToTextOverlay"
     "Microsoft.ZuneMusic"
-    "Microsoft.ZuneVideo"
+    "Microsoft.ZuneVideo" 
 )
 
 
@@ -124,6 +125,7 @@ Function ModifyReg {
             create -  Creates a key
             deleteK - delets a key
             deleteA - delets an attribute
+    type definitions:https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/new-itemproperty?view=powershell-7.2
     #>
 
     if ($action -eq "add"){
@@ -237,7 +239,7 @@ Function Remove-TheBloat-AU {
     WriteToLog -Message "Completed all user bloat removal"
 }
 
-Function Replace-StartMenu {
+Function New-StartMenu10 {
 # Creates a cleaned Start Menu layout file 
 
 $Layouts = '<?xml version="1.0" encoding="utf-8"?>
@@ -360,6 +362,17 @@ $Layouts = '<?xml version="1.0" encoding="utf-8"?>
         }  
     }
 }
+Function New-StartMenu11 {
+    # Removes bloatware from the start menu.
+    # Concept from: https://oofhours.com/2021/10/27/customize-the-windows-11-start-menu/
+
+    $pinnedList = '{"pinnedList":[{"desktopAppId":"MSEdge"},{"packagedAppId":"Microsoft.WindowsNotepad_8wekyb3d8bbwe!App"},{"desktopAppId":"Microsoft.Windows.Explorer"},{"packagedAppId":"windows.immersivecontrolpanel_cw5n1h2txyewy!microsoft.windows.immersivecontrolpanel"},{"packagedAppId":"Microsoft.WindowsTerminal_8wekyb3d8bbwe!App"},{"desktopAppId":"Microsoft.Windows.AdministrativeTools"}]}'
+
+    ModifyReg -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\current\device\" -key "Start" -action "create"
+    ModifyReg -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\current\device\Start" -key "ConfigureStartPins" -keyVal $pinnedList -type "string" -action "add"
+
+
+}
 
 Function Customize-Windows {
 # Sets settings for all new users. See below comments for detail.
@@ -383,12 +396,15 @@ Function Customize-Windows {
 	# Unchecks the "Show recents in Quick Access" 
 	ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion\Explorer" -key "ShowFrequent" -keyVal "0" -type "dword" -action "add"
 	ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion\Explorer" -key "ShowRecent" -keyVal "0" -type "dword" -action "add"
-	# Disables Xbox Game Bar being active by default in the Settings->Gaming->Xbox Game Bar section. 
-	ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion" -key "GameDVR" -action "create"
-	ModifyReg -Path "HKLM:\MAZY\software\Microsoft\Windows\CurrentVersion\GameDVR" -key "AppCaptureEnabled" -keyVal "0" -type "dword" -action "add"
-	ModifyReg -Path "HKLM:\MAZY\System\" -key "GameConfigStore" -action "create"
-	ModifyReg -Path "HKLM:\MAZY\System\GameConfigStore" -key "GameDVR_Enabled" -keyVal "0" -type "dword" -action "add"
-	
+    # Hides Cortana Button
+	ModifyReg -Path "HKLM:\MAZY\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -key "ShowCortanaButton" -keyVal "0" -type "dword" -action "add"
+	# Hides Task View Button
+	ModifyReg -Path "HKLM:\MAZY\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -key "ShowTaskViewButton" -keyVal "0" -type "dword" -action "add"
+    # Hides Chat Button
+    ModifyReg -Path "HKLM:\MAZY\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -key "TaskbarMn" -keyVal "0" -type "dword" -action "add"
+    # Hides Widget Button
+    ModifyReg -Path "HKLM:\MAZY\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -key "TaskbarDa" -keyVal "0" -type "dword" -action "add"
+
     WriteToLog -Message "Unmounting registry hive"
     # Garbage Collection to cleanup any open handles on registry hive
     [gc]::Collect()
@@ -482,6 +498,24 @@ Function ApplyMiscRegEdits{
     WriteToLog -Message "Completed Context Menu Cleanup"
 }
 
+Function CheckForUpdates{
+# Check for Win10 Debloat Script Updates via Github
+try {
+    $Response = Invoke-WebRequest -URI "https://raw.githubusercontent.com/gbabichev/Windows10-Bloatware-Removal/master/version" -UseBasicParsing
+    $latestVer = [decimal]$Response.Content
+    if ($latestVer -ne $scriptVersion){
+        $ask = Read-Host "You are using an older version of the Debloat Script. Update? (Y/N) "
+	    if ($ask -eq "y"){
+		    UpdateScript
+	    }
+    }
+}Catch {
+    WriteToLog -Message "Unable to check for script updates!" -color "red"  
+    WriteToLog -Message "Press Enter to continue" -color "yellow"
+    Read-Host
+ }
+}
+
 Function UpdateScript{
     WriteToLog "Updating Script" -color "yellow"
     if (Test-Path "C:\Scripts\debloatWin10Updated.ps1"){
@@ -507,32 +541,26 @@ If (!([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]
 	Exit
 }
 
-WriteToLog -Message "Starting Win10 Debloat Version $scriptVersion" -color "yellow"
+WriteToLog -Message "Starting Win10 & 11 Debloat Script. Version $scriptVersion" -color "yellow"
 
-# Check for Win10 Debloat Script Updates via Github
-try {
-    $Response = Invoke-WebRequest -URI "https://raw.githubusercontent.com/gbabichev/Windows10-Bloatware-Removal/master/version" -UseBasicParsing
-    $latestVer = [decimal]$Response.Content
-    if ($latestVer -ne $scriptVersion){
-        $ask = Read-Host "You are using an older version of the Debloat Script. Update? (Y/N) "
-	    if ($ask -eq "y"){
-		    UpdateScript
-	    }
-    }
-}Catch {
-    WriteToLog -Message "Unable to check for script updates!" -color "red"  
-    WriteToLog -Message "Press Enter to continue" -color "yellow"
-    Read-Host
- }
+$startDirectory = Get-Location
 
+CheckForUpdates  #Uncomment if you'd like the script to automatically check for updates on GitHub.
 
 if ($runType -eq "client"){
     Remove-TheBloat-CU
-    Remove-TheBloat-AU
-    Replace-StartMenu
+    Remove-TheBloat-AU 
     Customize-Windows
     RemoveExplorerFolders
     ApplyMiscRegEdits
+    $version = (Get-Host).version | select-object build -expandproperty build
+    if ($version -gt 20000)
+    {
+        New-StartMenu11
+    }
+    else {
+        New-StartMenu10 
+    }
 }
 if ($runType -eq "server"){
     Customize-Windows
@@ -540,7 +568,6 @@ if ($runType -eq "server"){
     ApplyMiscRegEdits
 }
 
-
+Set-Location $startDirectory
 
 WriteToLog -Message "Bloatware removale completed!"
-#Read-Host
